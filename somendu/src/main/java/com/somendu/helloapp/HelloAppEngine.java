@@ -1,6 +1,7 @@
 package com.somendu.helloapp;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,10 +18,13 @@ public class HelloAppEngine extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) 
       throws IOException {
 
-    response.setContentType("text/plain");
+    response.setContentType("text/HTML");
     response.setCharacterEncoding("UTF-8");
 
     response.getWriter().print("Hello App Engine!\r\n");
-
+    
+    PrintWriter out = response.getWriter();
+    out.println("<a href='" + getServletContext().getContextPath() + "/back'>To Back Page</a>");
+    
   }
 }
