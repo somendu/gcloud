@@ -3,6 +3,7 @@
 
   <threadsafe>true</threadsafe>
   <sessions-enabled>false</sessions-enabled>
+  <ssl-enabled>true</ssl-enabled>
   <runtime>java8</runtime>
 
   <system-properties>
