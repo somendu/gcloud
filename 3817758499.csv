@@ -1,0 +1,11 @@
+﻿Bill to,Somendu Maiti
+Invoice number,3817758499
+Invoice date,31 Oct 2020
+Billing ID,7083-2877-8301
+Currency,INR
+Invoice amount,0.49
+
+Account Name,Account ID,Product,Resource Type,SKU ID,Description,Start Date,End Date,Quantity,Unit,Amount
+GC Bill,011061-75A98F-60C88B,Cloud Storage,Standard Storage Europe Multi-region,EC40-8747-D6FF,Usage,1 Oct,31 Oct,0.222,Gibibyte-month,0.41
+, , , , ,Central GST (9%), , , , ,0.04
+, , , , ,State GST (9%), , , , ,0.04

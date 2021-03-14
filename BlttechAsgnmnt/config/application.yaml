@@ -1,0 +1,4 @@
+blttech.api:
+  server:  https://evening-brook-34199.herokuapp.com
+  application: /application
+
