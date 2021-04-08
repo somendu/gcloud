@@ -4,26 +4,22 @@
 package com.blttech.asgnment.model;
 
 import java.io.Serializable;
-import java.util.List;
+
+import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
 
 /**
- * 
- * Number List data model
+ * Response Class
  * 
  * @author Somendu Maiti
  *
  * @Since 14-Mar-2021
  */
-
 @Data
 @JsonSerialize
-public class NumberList implements Serializable {
-
-	private String id;
-	private List<Integer> nums;
-	private int sum;
+public class ApplicantResponse implements Serializable {
+	private ResponseEntity<?> response;
 }

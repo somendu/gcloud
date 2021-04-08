@@ -7,7 +7,9 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Configuring required beans if any
  * 
- * @author somendu
+ * @author Somendu Maiti
+ *
+ * @Since 14-Mar-2021
  *
  */
 @Configuration

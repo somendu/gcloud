@@ -11,7 +11,9 @@ import lombok.Data;
 /**
  * Config for end points
  * 
- * @author somendu
+ * @author Somendu Maiti
+ *
+ * @Since 14-Mar-2021
  *
  */
 @Data

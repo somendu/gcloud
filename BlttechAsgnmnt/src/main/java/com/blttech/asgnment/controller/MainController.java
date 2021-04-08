@@ -2,19 +2,28 @@ package com.blttech.asgnment.controller;
 
 import java.io.IOException;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.blttech.asgnment.model.NumberList;
 import com.blttech.asgnment.service.AsgnmntService;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
  * Controller
  * 
- * @author Somendu
+ * @author Somendu Maiti
  *
- * @since 21-Jul-2020
+ * @Since 14-Mar-2021
  */
 @RestController
 @RequestMapping("/api")
@@ -24,46 +33,41 @@ public class MainController {
 	private AsgnmntService asgnmntService;
 
 	/**
-	 * Simple REST method without params
+	 * Getting sum
 	 * 
-	 * @return String representing the greeting
+	 * @return JSON Object with total
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/nums", method = RequestMethod.GET)
-	public int getTotal() {
+	public NumberList getTotal() {
 		return asgnmntService.getTotal();
 	}
 
 	/**
-	 * Simple REST method without params
+	 * Submitting Application
 	 * 
-	 * @return String representing the greeting
+	 * @return String representing the status code
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/total", method = RequestMethod.POST)
-	public void submitTotal() {
+	@RequestMapping(value = "/application", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.MULTIPART_FORM_DATA_VALUE })
+	public ResponseEntity<?> submitTotal(@RequestPart("application") String application,
+			@RequestPart("file") MultipartFile file, @RequestPart("source") MultipartFile source)
+			throws JsonParseException, JsonMappingException, IOException {
+
+		JSONObject jsonObject = new JSONObject(application);
+
+		try {
+
+			String submission = asgnmntService.submitAnswer(application, file, source);
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity("Successfully uploaded!", HttpStatus.OK);
 
 	}
 
-	/**
-	 * Simple REST method without params
-	 * 
-	 * @return String representing the greeting
-	 * @throws IOException
-	 */
-	@RequestMapping(value = "/resume", method = RequestMethod.POST)
-	public void submitResume() {
-
-	}
-
-	/**
-	 * Simple REST method without params
-	 * 
-	 * @return String representing the greeting
-	 * @throws IOException
-	 */
-	@RequestMapping(value = "/code", method = RequestMethod.POST)
-	public void submitCode() {
-
-	}
 }

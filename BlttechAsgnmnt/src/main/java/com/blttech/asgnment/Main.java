@@ -13,14 +13,15 @@ import org.springframework.cache.annotation.EnableCaching;
  * 
  * @author Somendu Maiti
  *
+ * @Since 14-Mar-2021
+ *
  */
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 @EnableCaching
 public class Main extends SpringBootServletInitializer {
 
 	@Override
-	protected SpringApplicationBuilder configure(
-			SpringApplicationBuilder builder) {
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return configureApplication(builder);
 	}
 
@@ -29,8 +30,7 @@ public class Main extends SpringBootServletInitializer {
 		SpringApplication.run(Main.class, args);
 	}
 
-	private static SpringApplicationBuilder configureApplication(
-			SpringApplicationBuilder builder) {
+	private static SpringApplicationBuilder configureApplication(SpringApplicationBuilder builder) {
 		return builder.sources(Main.class).bannerMode(Banner.Mode.OFF);
 	}
 }
