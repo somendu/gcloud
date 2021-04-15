@@ -9,16 +9,19 @@ import java.io.IOException;
 import java.util.List;
 
 import org.json.JSONObject;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.blttech.asgnment.config.BlttechProperties;
+import com.blttech.asgnment.model.ApplicantResponse;
 import com.blttech.asgnment.model.NumberList;
 import com.blttech.asgnment.service.AsgnmntService;
 import com.google.gson.Gson;
@@ -50,57 +53,72 @@ public class AsgnmntServiceImpl implements AsgnmntService {
 
 		NumberList numberList = new Gson().fromJson(jsonObject.toString(), NumberList.class);
 
+		// Logic to calculate the sum
 		List<Integer> integerList = numberList.getNums();
 
 		int total = integerList.stream().reduce(0, (a, b) -> a + b);
 		numberList.setSum(total);
 
-		System.out.println("Total :" + total);
+		System.out.println("NumberList :" + numberList);
 		return numberList;
 	}
 
 	@Override
 	public String submitAnswer(String application, MultipartFile file, MultipartFile source) throws IOException {
 
+		System.out.println("came here submitAnswer service impl");
+
+		System.out.println(application);
+
 		String submitAnswer = "";
 
-		LinkedMultiValueMap<String, Object> body = new LinkedMultiValueMap<String, Object>();
-
-		// Creating first part
+		LinkedMultiValueMap<String, Object> requestBodyMap = new LinkedMultiValueMap<String, Object>();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		HttpEntity<String> jsonEntity = new HttpEntity<String>(application, headers);
-		body.add("application", jsonEntity);
+		// Creating first part
+
+		String jsonString = new Gson().toJson(application);
+		requestBodyMap.add("application", jsonString);
 
 		// Creating second part
-		HttpHeaders requestHeadersCVAttachment = new HttpHeaders();
-		requestHeadersCVAttachment.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		ContentDisposition contentDisposition = ContentDisposition.builder("form-data").name("file")
-				.filename(file.getOriginalFilename()).build();
-		requestHeadersCVAttachment.setContentDisposition(contentDisposition);
-		HttpEntity<byte[]> fileEntity = new HttpEntity<>(file.getBytes(), requestHeadersCVAttachment);
-		body.add("file", fileEntity);
 
-		// Creating third part
-		HttpHeaders requestHeadersCodeAttachment = new HttpHeaders();
-		requestHeadersCodeAttachment.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		ContentDisposition sourceContentDisposition = ContentDisposition.builder("form-data").name("source")
-				.filename(file.getOriginalFilename()).build();
-		requestHeadersCodeAttachment.setContentDisposition(sourceContentDisposition);
-		HttpEntity<byte[]> sourceFileEntity = new HttpEntity<>(source.getBytes(), requestHeadersCodeAttachment);
-		body.add("source", sourceFileEntity);
+		headers.setContentDisposition(ContentDisposition.parse("form-data; name=" + file.getOriginalFilename()));
 
-		String response = restTemplate.postForObject(blttechProperties.getServer() + blttechProperties.getApplication(),
-				body, String.class);
+		requestBodyMap.add("file", new ByteArrayResource(file.getBytes()) {
+			@Override
+			public String getFilename() {
+				return file.getOriginalFilename();
+			}
+		});
 
-//		restTemplate.postForLocation(blttechProperties.getServer() + blttechProperties.getApplication(), body);
+		// Creating third part part
+		headers.setContentDisposition(ContentDisposition.parse("form-data; name=" + source.getOriginalFilename()));
+//		LinkedMultiValueMap<String, Object> sourceBody = new LinkedMultiValueMap<String, Object>();
+		requestBodyMap.add("source", new ByteArrayResource(source.getBytes()) {
+			@Override
+			public String getFilename() {
+				return source.getOriginalFilename();
+			}
+		});
 
-		// int statusCode = response.getStatusCode().value();
+		System.out.println(blttechProperties.getServer() + blttechProperties.getApplication());
 
-//		submitAnswer = (statusCode == 200) ? "Answer Submitted Successfully"
-//				: "Answer Not Submitted Successfully with status code error as " + statusCode;
+		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(
+				requestBodyMap, headers);
 
-		return response;
+		ResponseEntity<?> response = restTemplate.postForEntity(
+				blttechProperties.getServer() + blttechProperties.getApplication(), requestEntity,
+				ApplicantResponse.class);
+//
+//		System.out.println("Headers : " + response.getResponse().getHeaders());
+//		int statusCode = response.getResponse().getStatusCode().value();
+		System.out.println("Headers : " + response.getHeaders());
+		int statusCode = response.getStatusCodeValue();
+////
+		submitAnswer = (statusCode == 200) ? "Answer Submitted Successfully"
+				: "Answer Not Submitted Successfully with status code error as " + statusCode;
+
+		return submitAnswer;
 	}
 
 	@Override
