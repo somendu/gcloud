@@ -2,10 +2,12 @@ package com.blttech.asgnment.controller;
 
 import java.io.IOException;
 
-import org.json.JSONObject;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.blttech.asgnment.model.Application;
 import com.blttech.asgnment.model.NumberList;
 import com.blttech.asgnment.service.AsgnmntService;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -51,22 +54,23 @@ public class MainController {
 	 * @throws JsonParseException
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/application", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE,
-			MediaType.MULTIPART_FORM_DATA_VALUE })
-	public ResponseEntity<?> submitTotal(@RequestPart("application") String application,
-			@RequestPart("file") MultipartFile file, @RequestPart("source") MultipartFile source)
+
+	@RequestMapping(value = "/application", method = RequestMethod.POST, consumes = { "multipart/form-data" })
+	public ResponseEntity<?> submitTotal(@RequestPart("application") @Valid Application application,
+			@RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file,
+			@RequestPart("source") @Valid @NotNull @NotBlank MultipartFile source)
 			throws JsonParseException, JsonMappingException, IOException {
 
-		JSONObject jsonObject = new JSONObject(application);
+		String submission = "";
 
 		try {
 
-			String submission = asgnmntService.submitAnswer(application, file, source);
-		} catch (IOException e) {
+			submission = asgnmntService.submitAnswer(application, file, source);
+		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity("Successfully uploaded!", HttpStatus.OK);
+		return new ResponseEntity<String>(submission, HttpStatus.OK);
 
 	}
 

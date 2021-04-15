@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.blttech.asgnment.model.Application;
 import com.blttech.asgnment.model.NumberList;
 
 /**
@@ -32,13 +33,6 @@ public interface AsgnmntService {
 	 * 
 	 * @return
 	 */
-	public String submitAnswer(String application, MultipartFile file, MultipartFile source) throws IOException;
-
-	/**
-	 * Submitting file
-	 * 
-	 * @return
-	 */
-	public String submitFile(MultipartFile file) throws IOException;
+	public String submitAnswer(Application application, MultipartFile file, MultipartFile source) throws IOException;
 
 }

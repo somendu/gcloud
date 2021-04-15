@@ -3,8 +3,8 @@
  */
 package com.blttech.asgnment.model;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
 
@@ -14,9 +14,11 @@ import lombok.Data;
  * @Since 16-Mar-2021
  */
 @Data
-@JsonAutoDetect(fieldVisibility = Visibility.ANY)
-
+@JsonSerialize
 public class Answer {
+
+	@JsonProperty("questionId")
 	private String questionId;
+
 	private int sum;
 }

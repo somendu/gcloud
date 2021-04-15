@@ -3,11 +3,9 @@
  */
 package com.blttech.asgnment.model;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 /**
  * @author Somendu Maiti
@@ -15,10 +13,10 @@ import lombok.experimental.Accessors;
  * @Since 16-Mar-2021
  */
 @Data
-@JsonAutoDetect(fieldVisibility = Visibility.ANY)
-@Accessors(chain = true)
-
+@JsonSerialize
 public class Applicant {
+
 	private String firstName;
+
 	private String lastName;
 }
